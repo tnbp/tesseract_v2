@@ -97,7 +97,8 @@ void setup() {
 void loop() {
 	if ((SERIAL_BYTES_AVAILABLE = min(Serial.available(), 256))) {
 		for (unsigned short i = 0; i < SERIAL_BYTES_AVAILABLE; i++) SERIAL_RX_BUFFER[i] = Serial.read();
-		for (unsigned short i = SERIAL_BYTES_AVAILABLE; i < 256+1; i++) SERIAL_RX_BUFFER[i] = '\0';
+		while (Serial.available()) Serial.read(); // throw away excess bytes
+		for (unsigned short i = SERIAL_BYTES_AVAILABLE; i <= 256; i++) SERIAL_RX_BUFFER[i] = '\0';
 		if (SERIAL_LIFETIME > 0) {
 			if (!(strncmp(SERIAL_RX_BUFFER, TCT_KEEPALIVE_STRING_REQUEST, strlen(TCT_KEEPALIVE_STRING_REQUEST)))) {
 				Serial.println(TCT_KEEPALIVE_STRING_ACK);
